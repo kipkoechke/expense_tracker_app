@@ -12,6 +12,7 @@ class Expenses extends StatefulWidget {
 }
 
 class _ExpensesState extends State<Expenses> {
+  
   final List<Expense> _registeredExpenses = [
     Expense(
       title: 'Flutter Course',
@@ -26,6 +27,7 @@ class _ExpensesState extends State<Expenses> {
       category: Category.leisure,
     ),
   ];
+  
 
   void _addExpenseOverlay() {
     showModalBottomSheet(
@@ -39,12 +41,41 @@ class _ExpensesState extends State<Expenses> {
     setState(() {
       _registeredExpenses.add(expense);
     });
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        duration: const Duration(seconds: 4),
+        content: const Text('Expenses Added!'),
+        action: SnackBarAction(
+          label: 'Undo',
+          onPressed: () {
+            setState(() {
+              _registeredExpenses.remove(expense);
+            });
+          },
+        ),
+      ),
+    );
   }
 
   void _removeExpense(Expense expense) {
+    final expenseIndex = _registeredExpenses.indexOf(expense);
     setState(() {
       _registeredExpenses.remove(expense);
     });
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        duration: const Duration(seconds: 4),
+        content: const Text('Expenses Removed!'),
+        action: SnackBarAction(
+          label: 'Undo',
+          onPressed: () {
+            setState(() {
+              _registeredExpenses.insert(expenseIndex, expense);
+            });
+          },
+        ),
+      ),
+    );
   }
 
   @override
